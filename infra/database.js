@@ -15,12 +15,13 @@ async function connect() {
 
 async function query(queryObject) {
   const client = await connect();
+  try {
+    const result = await client.query(queryObject);
 
-  const result = await client.query(queryObject);
-
-  await client.end();
-
-  return result;
+    return result;
+  } finally {
+    await client.end();
+  }
 }
 
 export default { query };

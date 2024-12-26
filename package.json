@@ -11,7 +11,10 @@
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "migration:create": "node-pg-migrate -m infra/migrations create",
+    "migration:up": "node-pg-migrate -m infra/migrations up",
+    "migration:down": "node-pg-migrate -m infra/migrations down"
   },
   "author": "",
   "license": "MIT",

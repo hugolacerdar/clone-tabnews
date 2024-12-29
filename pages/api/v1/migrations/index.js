@@ -9,36 +9,47 @@ export default async function migrations(request, response) {
     return response.status(405).end();
   }
 
-  const dbClient = await database.getNewClient();
+  let dbClient;
 
-  const defaultMigrationOptions = {
-    dbClient: dbClient,
-    dir: join("infra", "migrations"),
-    migrationsTable: "pgmigrations",
-    verbose: true,
-    direction: "up",
-  };
+  try {
+    dbClient = await database.getNewClient();
 
-  if (request.method === "GET") {
-    const pendingMigrations = await migrationRunner({
-      ...defaultMigrationOptions,
-      dryRun: true,
-    });
+    const defaultMigrationOptions = {
+      dbClient: dbClient,
+      dir: join("infra", "migrations"),
+      migrationsTable: "pgmigrations",
+      verbose: true,
+      direction: "up",
+    };
 
-    await dbClient.end();
+    if (request.method === "GET") {
+      const pendingMigrations = await migrationRunner({
+        ...defaultMigrationOptions,
+        dryRun: true,
+      });
 
-    return response.status(200).json(pendingMigrations);
-  }
+      await dbClient.end();
 
-  if (request.method === "POST") {
-    const executedMigrations = await migrationRunner({
-      ...defaultMigrationOptions,
-      dryRun: false,
-    });
+      return response.status(200).json(pendingMigrations);
+    }
 
-    await dbClient.end();
+    if (request.method === "POST") {
+      const executedMigrations = await migrationRunner({
+        ...defaultMigrationOptions,
+        dryRun: false,
+      });
 
-    const status_code = executedMigrations.length > 0 ? 201 : 200;
-    return response.status(status_code).json(executedMigrations);
+      await dbClient.end();
+
+      const status_code = executedMigrations.length > 0 ? 201 : 200;
+      return response.status(status_code).json(executedMigrations);
+    }
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ error: "Something went wrong" });
+  } finally {
+    if (dbClient) {
+      await dbClient.end();
+    }
   }
 }

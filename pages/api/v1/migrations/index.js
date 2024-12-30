@@ -28,8 +28,6 @@ export default async function migrations(request, response) {
         dryRun: true,
       });
 
-      await dbClient.end();
-
       return response.status(200).json(pendingMigrations);
     }
 
@@ -38,8 +36,6 @@ export default async function migrations(request, response) {
         ...defaultMigrationOptions,
         dryRun: false,
       });
-
-      await dbClient.end();
 
       const status_code = executedMigrations.length > 0 ? 201 : 200;
       return response.status(status_code).json(executedMigrations);

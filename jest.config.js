@@ -6,7 +6,7 @@ dotenv.config({ path: ".env.development" });
 const createJestConfig = nextJest();
 const jestConfig = createJestConfig({
   moduleDirectories: ["node_modules", "<rootDir>"],
-  testTimout: 60000,
+  testTimeout: 60000,
 });
 
 module.exports = jestConfig;

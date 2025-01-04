@@ -4,7 +4,8 @@
   "description": "Implementação do projeto https://www.tabnews.com.br/ (curso https://curso.dev/)",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run services:up && npm run services:wait:database && npm run migration:up && next dev",
+    "dev": "node infra/scripts/manage-dev-environment.js",
+    "next:run": "next dev",
     "test": "npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
     "test:watch": "jest --runInBand --watchAll",
     "services:up": "docker compose -f infra/compose.yaml up -d",
